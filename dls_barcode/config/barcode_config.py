@@ -1,11 +1,13 @@
 import sys
 
 from dls_barcode.geometry import Geometry
+from dls_barcode.camera_mode import CameraMode
 from dls_barcode.datamatrix import DataMatrix
 from dls_barcode.datamatrix.read import DatamatrixSizeTable
 from dls_util.image import Color
 from dls_util.config import Config, DirectoryConfigItem, ColorConfigItem, \
     IntConfigItem, BoolConfigItem, EnumConfigItem
+
 
 IS_BUNDLED = getattr(sys, 'frozen', False)
 
@@ -31,6 +33,8 @@ class BarcodeConfig(Config):
         self.camera_number = add(IntConfigItem, "Camera Number", default=0)
         self.camera_width = add(IntConfigItem, "Camera Width", default=1920)
         self.camera_height = add(IntConfigItem, "Camera Height", default=1080)
+
+        self.camera_mode = add(EnumConfigItem, "Camera Mode", default=CameraMode.SINGLE_MODE, extra_arg=CameraMode.TYPES)
 
         self.plate_type = add(EnumConfigItem, "Sample Plate Type", default=Geometry.UNIPUCK, extra_arg=Geometry.TYPES)
         self.barcode_size = add(EnumConfigItem, "Datamatrix Size", default=DataMatrix.DEFAULT_SIZE,

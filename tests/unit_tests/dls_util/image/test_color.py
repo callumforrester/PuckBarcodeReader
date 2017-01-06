@@ -9,8 +9,6 @@ class TestColor(unittest.TestCase):
     def setUp(self):
         self.firstColor = Color(10,50,100)
 
-
-
     def test_bgra(self):
         self.assertEquals(Color.bgra(self.firstColor), (100,50,10,255))
 

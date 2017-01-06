@@ -23,7 +23,10 @@ class BarcodeConfigDialog(ConfigDialog):
 
         camera = CameraConfigControl(cfg.camera_number, cfg.camera_width, cfg.camera_height)
 
-        self.start_group("Sample Plate")
+        self.start_group("Camera Mode")
+        add(cfg.camera_mode)
+
+        self.start_group("Sample Data")
         add(cfg.plate_type)
         add(cfg.barcode_size)
 
