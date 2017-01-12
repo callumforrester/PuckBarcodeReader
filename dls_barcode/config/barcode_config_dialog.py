@@ -27,7 +27,7 @@ class BarcodeConfigDialog(ConfigDialog):
         add(cfg.camera_mode)
 
         self.start_group("Sample Data")
-        add(cfg.plate_type)
+        #add(cfg.plate_type)
         add(cfg.barcode_size)
 
         self.start_group("Colors")

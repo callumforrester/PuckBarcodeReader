@@ -2,6 +2,12 @@ from __future__ import division
 
 import multiprocessing
 import time
+
+from dls_barcode.geometry import Geometry
+from dls_barcode.geometry import GeometryException
+from dls_barcode.plate.geometry_adjuster import GeometryAdjustmentError
+from dls_barcode.scan.with_geometry.scan import NoBarcodesError
+
 try:
     import winsound
 except ImportError:
@@ -139,13 +145,8 @@ def _scanner_worker(task_queue, overlay_queue, result_queue, options):
     SlotScanner.DEBUG = options.slot_images.value()
     SlotScanner.DEBUG_DIR = options.slot_image_directory.value()
 
-    plate_type = options.plate_type.value()
+    camera_mode = options.camera_mode.value()
     barcode_size = options.barcode_size.value()
-
-    if plate_type == "None":
-        scanner = OpenScanner(barcode_size)
-    else:
-        scanner = GeometryScanner(plate_type, barcode_size)
 
     while True:
         # Get next image from queue (terminate if a queue contains a 'None' sentinel)
@@ -157,10 +158,15 @@ def _scanner_worker(task_queue, overlay_queue, result_queue, options):
         image = Image(frame)
         gray_image = image.to_grayscale()
 
+        if camera_mode == "Single Mode":
+            try:
+                scan_result = GeometryScanner(Geometry.UNIPUCK, barcode_size).scan_next_frame(gray_image)
+            except (NoBarcodesError, GeometryException, GeometryAdjustmentError):
+                scan_result = OpenScanner(barcode_size).scan_next_frame(gray_image)
+
         # If we have an existing partial plate, merge the new plate with it and only try to read the
         # barcodes which haven't already been read. This significantly increases efficiency because
         # barcode read is expensive.
-        scan_result = scanner.scan_next_frame(gray_image)
 
         if options.console_frame.value():
             scan_result.print_summary()

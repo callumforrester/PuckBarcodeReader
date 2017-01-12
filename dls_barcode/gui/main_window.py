@@ -1,4 +1,10 @@
 import multiprocessing
+
+from dls_barcode.geometry import GeometryException
+from dls_barcode.geometry.exception import GeometryAlignmentError
+from dls_barcode.plate.geometry_adjuster import GeometryAdjustmentError
+from dls_barcode.scan.with_geometry.scan import NoBarcodesError
+
 try:
     import winsound
 except ImportError:
@@ -20,6 +26,7 @@ from dls_util.image import Image
 from .barcode_table import BarcodeTable
 from .image_frame import ImageFrame
 from .record_table import ScanRecordTable
+from dls_barcode.geometry import Geometry
 
 
 class DiamondBarcodeMainWindow(QtGui.QMainWindow):
@@ -166,17 +173,18 @@ class DiamondBarcodeMainWindow(QtGui.QMainWindow):
             gray_image = cv_image.to_grayscale()
 
             # Scan the image for barcodes
-            plate_type = self._config.plate_type.value()
+            #plate_type = self._config.plate_type.value()
+            camera_mode = self._config.camera_mode.value()
             barcode_size = self._config.barcode_size.value()
             SlotScanner.DEBUG = self._config.slot_images.value()
             SlotScanner.DEBUG_DIR = self._config.slot_image_directory.value()
 
-            if plate_type == "None":
-                scanner = OpenScanner(barcode_size)
-            else:
-                scanner = GeometryScanner(plate_type, barcode_size)
+            if camera_mode == "Single Mode":
+                try:
+                    scan_result = GeometryScanner(Geometry.UNIPUCK, barcode_size).scan_next_frame(gray_image, is_single_image=True)
+                except (NoBarcodesError, GeometryException, GeometryAdjustmentError):
+                    scan_result = OpenScanner(barcode_size).scan_next_frame(gray_image, is_single_image=True)
 
-            scan_result = scanner.scan_next_frame(gray_image, is_single_image=True)
             plate = scan_result.plate()
 
             # If the scan was successful, store the results

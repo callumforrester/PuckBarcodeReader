@@ -36,7 +36,7 @@ class BarcodeConfig(Config):
 
         self.camera_mode = add(EnumConfigItem, "Camera Mode", default=CameraMode.SINGLE_MODE, extra_arg=CameraMode.TYPES)
 
-        self.plate_type = add(EnumConfigItem, "Sample Plate Type", default=Geometry.UNIPUCK, extra_arg=Geometry.TYPES)
+        #self.plate_type = add(EnumConfigItem, "Sample Plate Type", default=Geometry.UNIPUCK, extra_arg=Geometry.TYPES)
         self.barcode_size = add(EnumConfigItem, "Datamatrix Size", default=DataMatrix.DEFAULT_SIZE,
                                 extra_arg=DatamatrixSizeTable.valid_sizes())
 

@@ -35,12 +35,8 @@ class GeometryScanner:
         self._frame_img = frame_img
         self._is_single_image = is_single_image
 
-        try:
-            self._perform_frame_scan()
-            self._frame_result.set_plate(self._plate)
-
-        except (NoBarcodesError, GeometryException, GeometryAdjustmentError) as ex:
-            self._frame_result.set_error(str(ex))
+        self._perform_frame_scan()
+        self._frame_result.set_plate(self._plate)
 
         self._frame_result.end_timer()
         return self._frame_result
