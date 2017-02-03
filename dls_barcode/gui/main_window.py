@@ -2,6 +2,7 @@ import multiprocessing
 
 from dls_barcode.geometry import GeometryException
 from dls_barcode.geometry.exception import GeometryAlignmentError
+from dls_barcode.gui.side_barcode_window import SideBarcodeWindow
 from dls_barcode.plate.geometry_adjuster import GeometryAdjustmentError
 from dls_barcode.scan.with_geometry.scan import NoBarcodesError
 
@@ -50,7 +51,9 @@ class DiamondBarcodeMainWindow(QtGui.QMainWindow):
         # UI elements
         self.recordTable = None
         self.barcodeTable = None
+        self.sideBarcodeWindow = None
         self.imageFrame = None
+        self.imageFrameSide = None
 
         self._init_ui()
 
@@ -66,8 +69,13 @@ class DiamondBarcodeMainWindow(QtGui.QMainWindow):
         # Barcode table - lists all the barcodes in a record
         self.barcodeTable = BarcodeTable(self._config)
 
+        # Side barcode window - side barcode
+        self.sideBarcodeWindow = SideBarcodeWindow(self._config)
+
         # Image frame - displays image of the currently selected scan record
-        self.imageFrame = ImageFrame()
+        self.imageFrame = ImageFrame(500, 500, "Plate Image")
+
+        self.imageFrameSide = ImageFrame(100, 100, "Side Image")
 
         # Scan record table - lists all the records in the store
         self.recordTable = ScanRecordTable(self.barcodeTable, self.imageFrame, self._config)
@@ -92,10 +100,18 @@ class DiamondBarcodeMainWindow(QtGui.QMainWindow):
         hbox.setSpacing(10)
         hbox.addWidget(self.recordTable)
         hbox.addWidget(self.barcodeTable)
-        hbox.addWidget(self.imageFrame)
-        hbox.addStretch(1)
+        vbox_new = QtGui.QVBoxLayout()
+        vbox_new.addWidget(self.imageFrame)
+        hbox_new = QtGui.QHBoxLayout()
+
+        hbox_new.addWidget(self.sideBarcodeWindow)
+        hbox_new.addWidget(self.imageFrameSide)
+        vbox_new.addLayout(hbox_new)
+
+        hbox.addLayout(vbox_new)
 
         vbox = QtGui.QVBoxLayout()
+
         vbox.addLayout(hbox_btn)
         vbox.addLayout(hbox)
 
@@ -104,6 +120,7 @@ class DiamondBarcodeMainWindow(QtGui.QMainWindow):
         self.setCentralWidget(main_widget)
 
         self.show()
+
 
     def init_menu_bar(self):
         """Create and populate the menu bar.
