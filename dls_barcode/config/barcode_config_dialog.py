@@ -30,12 +30,12 @@ class BarcodeConfigDialog(ConfigDialog):
         add(cfg.color_unreadable)
         add(cfg.color_empty)
 
-        self.start_group("Top Camera")
+        self.start_group("Side Camera")
         add(cfg.barcode_size)
         add(cfg.plate_type)
         self._add_control(camera_puck)
 
-        self.start_group("Side Camera")
+        self.start_group("Top Camera")
         self._add_control(camera_side)
 
         self.start_group("Scanning")
