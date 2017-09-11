@@ -123,3 +123,14 @@ class EnumConfigItem(ConfigItem):
         if value not in self.enum_names:
             value = self._default
         return value
+
+
+# class MultiValuesConfigItem(ConfigItem):
+#     """Config item that stores a list of values selected from a list of available values. """
+#     def __init__(self, tag, default, available_values):
+#         ConfigItem.__init__(self, tag, default)
+#         self.available_values = available_values
+#
+#         # TODO: what if default contains values not in the available list?
+#
+#     def
