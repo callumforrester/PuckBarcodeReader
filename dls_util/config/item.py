@@ -1,5 +1,6 @@
 from ..image import Color
 from .config import Config
+import ast
 
 
 class ConfigItem:
@@ -125,12 +126,22 @@ class EnumConfigItem(ConfigItem):
         return value
 
 
-# class MultiValuesConfigItem(ConfigItem):
-#     """Config item that stores a list of values selected from a list of available values. """
-#     def __init__(self, tag, default, available_values):
-#         ConfigItem.__init__(self, tag, default)
-#         self.available_values = available_values
-#
-#         # TODO: what if default contains values not in the available list?
-#
-#     def
+class MultiValuesConfigItem(ConfigItem):
+    """Config item that stores a list of values selected from a list of available values. """
+    def __init__(self, tag, default, available_entries):
+        ConfigItem.__init__(self, tag, default)
+        self.available_values = available_entries
+
+    def from_file_string(self, string):
+        raw_value = ast.literal_eval(string)
+        self._value = self._clean(raw_value)
+
+    def _clean(self, value):
+        """Ignore entries that are not in the list of available values"""
+        cleaned_value = [v for v in value if v in self.available_values]
+        if cleaned_value:
+            return cleaned_value
+
+        return self._default
+
+
