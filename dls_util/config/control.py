@@ -125,6 +125,27 @@ class EnumConfigControl(ConfigControl):
         self._config_item.set(value)
 
 
+class MultiValueConfigControl(ConfigControl):
+    def __init__(self, config_item):
+        ConfigControl.__init__(self, config_item)
+
+        self._init_ui()
+
+    def _init_ui(self):
+        lbl_group = QLabel(str(self._config_item.tag()))
+        lbl_group.setFixedWidth(self.LABEL_WIDTH)
+
+        lbl_test = QLabel(str(self._config_item.value()))
+
+        hbox = QHBoxLayout()
+        hbox.setContentsMargins(0, 0, 0, 0)
+        hbox.addWidget(lbl_group)
+        hbox.addWidget(lbl_test)
+        hbox.addStretch()
+
+        self.setLayout(hbox)
+
+
 class DirectoryConfigControl(ConfigControl):
     BUTTON_WIDTH = 80
     TEXT_WIDTH = 200

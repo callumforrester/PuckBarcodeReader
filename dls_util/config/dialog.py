@@ -76,6 +76,8 @@ class ConfigDialog(QtGui.QDialog):
             add(ColorConfigControl(item))
         elif isinstance(item, DirectoryConfigItem):
             add(DirectoryConfigControl(item))
+        elif isinstance(item, MultiValuesConfigItem):
+            add(MultiValueConfigControl(item))
 
     def finalize_layout(self):
         """ Set the layout in the dialog. This must be called after all of the items have been added (if doing

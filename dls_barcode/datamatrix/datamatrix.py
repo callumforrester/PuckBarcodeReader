@@ -49,8 +49,9 @@ class DataMatrix:
         self._damaged_symbol = False
         self._is_read_performed = False
 
-    def set_matrix_sizes(self, matrix_size):
-        self._matrix_sizes = int(matrix_size)
+    def set_matrix_sizes(self, matrix_sizes):
+        # self._matrix_sizes = int(matrix_size)
+        self._matrix_sizes = matrix_sizes
 
     def perform_read(self, offsets=wiggle_offsets, force_read=False):
         """ Attempt to read the DataMatrix from the image supplied in the constructor at the position
@@ -106,13 +107,14 @@ class DataMatrix:
         """ From the supplied grayscale image, attempt to read the barcode at the location
         given by the datamatrix finder pattern.
         """
-        for MatrixSize in range(12, 16, 2):
-            bit_reader = DatamatrixBitReader(MatrixSize)
+        for matrix_size in self._matrix_sizes:
+            print("Trying size: " + str(matrix_size))
+            bit_reader = DatamatrixBitReader(matrix_size)
             extractor = DatamatrixByteExtractor()
             decoder = ReedSolomonDecoder()
             interpreter = DatamatrixByteInterpreter()
 
-            message_length = DatamatrixSizeTable.num_data_bytes(MatrixSize)
+            message_length = DatamatrixSizeTable.num_data_bytes(matrix_size)
 
             if (self._read_ok):
                 break
